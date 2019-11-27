@@ -1,0 +1,29 @@
+[COLLECTION] order:
+	_id
+	order_items: [{ publication: publication_id, price: int, quantity: int }, ...]
+
+[COLLECTION] publisher:
+	_id
+	name
+	address
+	contact
+
+[COLLECTION] publication:
+	_id
+	publisher: publisher_id
+	book: _book_id	
+	pbn_date
+
+[COLLECTION] book:
+	_id
+	name
+	authors: [ _person_id, ... ]
+	genres: ["genre 1", ... ]
+	edits: [{ date: "28.07.2019", editor: person_id }, ...]
+	
+[COLLECTION] person:
+	_id
+	f_name
+	l_name
+	address
+	contact
