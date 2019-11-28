@@ -11,7 +11,7 @@
 [COLLECTION] publication:
 	_id
 	publisher: publisher_id
-	book: _book_id	
+	book: _book_id
 	pbn_date
 
 [COLLECTION] book:
@@ -19,7 +19,7 @@
 	name
 	authors: [ _person_id, ... ]
 	genres: ["genre 1", ... ]
-	edits: [{ date: "28.07.2019", editor: person_id }, ...]
+	edits: [{ date: "28.07.2019", editor: _person_id }, ...]
 	
 [COLLECTION] person:
 	_id
