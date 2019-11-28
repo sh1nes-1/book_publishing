@@ -30,7 +30,12 @@ router.post('/', function(req, res, next) {
     }
     */
 
-    personsCollection.insert(req.body, function(err, persons) {
+    personsCollection.insert({
+        f_name: req.body.f_name,
+        l_name: req.body.l_name,
+        address: req.body.address,
+        contact: req.body.contact
+    }, function(err, persons) {
         if (err) throw err;
         res.json(persons);
     });
