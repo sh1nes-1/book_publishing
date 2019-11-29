@@ -9,6 +9,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/authors.html',
             controller: 'AuthorsCtrl'
         })
+        .when('/authors/:id', {
+            templateUrl: 'partials/author.html',
+            controller: 'AuthorCtrl'
+        })
         .when('/books', {
             templateUrl: 'partials/books.html',
             controller: 'BooksCtrl'
@@ -27,6 +31,20 @@ app.controller('AuthorsCtrl', ['$scope', '$resource',
         var Authors = $resource('/api/authors');        
         Authors.query(function(authors) {
             $scope.authors = authors;
+        });
+    }
+]);
+
+app.controller('AuthorCtrl', ['$scope', '$resource', '$routeParams',
+    function($scope, $resource, $routeParams) {
+        var Author = $resource('/api/authors/' + $routeParams.id);     
+        var Books = $resource('/api/authors/' + $routeParams.id + "/books");   
+        Author.get(function(author) {
+            console.log('Hello!');
+            $scope.author = author;
+            Books.query(function(books) {
+                $scope.author.books = books;
+            })
         });
     }
 ]);

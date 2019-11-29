@@ -1,4 +1,6 @@
 <h1>Список авторів</h1>
 <ul>
-    <li ng-repeat='author in authors'>{{author.f_name}} {{author.l_name}}</li>
+    <li ng-repeat='author in authors'>
+        <a href="/#/authors/{{author._id}}">{{author.f_name}} {{author.l_name}}</a>
+    </li>
 </ul>
