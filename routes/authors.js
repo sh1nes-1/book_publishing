@@ -9,9 +9,13 @@ var db = monk('localhost:27017/book_publishing');
 // Get All
 router.get('/', function(req, res, next) {
     var booksCollection = db.get('book');
-    booksCollection.find({}, function(err, books) {
+    booksCollection.distinct('authors', function(err, authorIds) {
         if (err) throw err;
-        res.json(books);
+        var personsCollection = db.get('person');
+        personsCollection.find({'_id':{$in:authorIds}}, function(err, authors) {
+            if (err) throw err;
+            res.json(authors);
+        });
     });
 });
 
@@ -22,29 +26,29 @@ router.get('/:id', function(req, res, next) {
         return;
     }
 
-    var booksCollection = db.get('book');
-    booksCollection.findOne({'_id':req.params.id}, function(err, book) {
+    var personsCollection = db.get('person');
+    personsCollection.findOne({'_id':req.params.id}, function(err, author) {
         if (err) throw err;
-        res.json(book);
-    });
+        res.json(author);
+    });        
 });
 
-// Get authors of book
-router.get('/:id/authors', function(req, res, next) {
+// Get books of author
+router.get('/:id/books', function(req, res, next) {
     if (!mongodb.ObjectID.isValid(req.params.id)) {
         res.status(400).send({error: 'BAD_FORMAT', message: req.params.id + ' is not in correct format!'});
         return;
     }
 
     var booksCollection = db.get('book');
-    booksCollection.findOne({'_id': req.params.id}, function(err, book) {
+    booksCollection.find({'authors':{$all:[req.params.id]}}, function(err, books) {
         if (err) throw err;
-        var authorsCollection = db.get('person');
-        authorsCollection.find({'_id':{$in:book.authors}}, function(err, authors) {
+        var personsCollection = db.get('person');
+        personsCollection.findOne({'_id':req.params.id}, function(err, author) {
             if (err) throw err;
-            res.json(authors);
-        });
-    });
+            res.json(books);
+        });        
+    })
 });
 
 module.exports = router

@@ -1,4 +1,4 @@
 <h1>Список книг:</h1>
 <ul>
-    <li ng-repeat='book in books'>{{book.name}}</li>
+    <li ng-repeat='book in books'><a href="/#/books/{{book._id}}">{{book.name}}</a></li>
 </ul>

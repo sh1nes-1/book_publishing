@@ -2,12 +2,12 @@
 	_id
 	order_items: [{ publisher_id, book_id, price, quantity }, ...]
 
-[COLLECTION] publishings:
+[COLLECTION] publishers:
 	_id
 	name
 	address
 	contact
-	publications: [{_book_id, pbn_date, amount}, ...]
+	publications: [{ _book_id, pbn_date, amount }, ...]
 
 [COLLECTION] book:
 	_id

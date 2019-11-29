@@ -1,0 +1,14 @@
+<h1>{{book.name}}</h1>
+
+<ul>
+    <li>
+        Автори:
+        <span ng-repeat="author in book.authors">
+            <a href="">{{author.f_name}} {{author.l_name}}</a><span ng-show="!$last">, </span>
+        </span>
+    </li>
+    <li>
+        Жанри:
+        <span ng-repeat="genre in book.genres">{{genre}}<span ng-show="!$last">, </span></span>
+    </li>
+</ul>
