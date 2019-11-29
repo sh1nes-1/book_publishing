@@ -7,12 +7,7 @@
 	name
 	address
 	contact
-
-publication:
-	_id
-	book: _book_id
-	pbn_date
-	// тираж
+	publications: [{_book_id, pbn_date, amount}, ...]
 
 [COLLECTION] book:
 	_id

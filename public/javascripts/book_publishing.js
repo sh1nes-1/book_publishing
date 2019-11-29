@@ -5,20 +5,33 @@ app.config(['$routeProvider', function($routeProvider) {
         .when('/', {
             templateUrl: 'partials/home.html'
         })
-        .when('/persons', {
-            templateUrl: 'partials/persons.html',
-            controller: 'PersonsCtrl'
+        .when('/authors', {
+            templateUrl: 'partials/authors.html',
+            controller: 'AuthorsCtrl'
+        })
+        .when('/books', {
+            templateUrl: 'partials/books.html',
+            controller: 'BooksCtrl'
         })
         .otherwise({
             redirectTo: '/'
         });
 }]);
 
-app.controller('PersonsCtrl', ['$scope', '$resource', 
+app.controller('AuthorsCtrl', ['$scope', '$resource', 
     function($scope, $resource) {
-        var Persons = $resource('/api/persons');
-        Persons.query(function(persons) {
-            $scope.persons = persons;
+        var Authors = $resource('/api/books/authors');        
+        Authors.query(function(authors) {
+            $scope.authors = authors;
+        });
+    }
+]);
+
+app.controller('BooksCtrl', ['$scope', '$resource', 
+    function($scope, $resource) {
+        var Books = $resource('/api/books');
+        Books.query(function(books) {
+            $scope.books = books;
         });
     }
 ]);

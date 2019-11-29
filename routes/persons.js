@@ -18,17 +18,6 @@ router.get('/', function(req, res, next) {
 // Insert One/Many
 router.post('/', function(req, res, next) {
     var personsCollection = db.get('person');
-
-    /*
-    if (typeof req.body.f_name === 'undefined' 
-    || typeof req.body.l_name === 'undefined'
-    || typeof req.body.address === 'undefined'
-    || typeof req.body.contact === 'undefined') {
-        res.status(400).send({ error: 'BAD_FORMAT', message: 'Some parameters are missing!'});
-        return;
-    }
-    */
-
     personsCollection.insert({
         f_name: req.body.f_name,
         l_name: req.body.l_name,
@@ -48,7 +37,6 @@ router.get('/:id', function(req, res, next) {
     }
 
     var personsCollection = db.get('person');
-
     personsCollection.findOne({'_id': req.params.id}, function(err, person) {
         if (err) throw err;
         res.json(person);
