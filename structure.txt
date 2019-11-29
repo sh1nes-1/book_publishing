@@ -1,29 +1,37 @@
 [COLLECTION] order:
 	_id
-	order_items: [{ publication: publication_id, price: int, quantity: int }, ...]
+	order_items: [{ publisher_id, book_id, price, quantity }, ...]
 
-[COLLECTION] publisher:
+[COLLECTION] publishings:
 	_id
 	name
 	address
 	contact
 
-[COLLECTION] publication:
+publication:
 	_id
-	publisher: publisher_id
 	book: _book_id
 	pbn_date
+	// тираж
 
 [COLLECTION] book:
 	_id
 	name
 	authors: [ _person_id, ... ]
 	genres: ["genre 1", ... ]
-	edits: [{ date: "28.07.2019", editor: _person_id }, ...]
-	
+
+[COLLECTION] edits:
+    _id
+	name
+	_person_id
+	books: [{_book_id, date: "28.07.2019"}]
+
 [COLLECTION] person:
 	_id
 	f_name
 	l_name
 	address
 	contact
+
+// API: minimum: view book, view persons, order put post delete 
+// кнопка замовити на сторінці книжки

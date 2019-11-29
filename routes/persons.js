@@ -13,7 +13,6 @@ router.get('/', function(req, res, next) {
         if (err) throw err;
         res.json(persons);
     });
-    
 });
 
 // Insert One/Many
