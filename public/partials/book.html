@@ -1,5 +1,5 @@
 <h1>{{book.name}}</h1>
-
+<hr>
 <ul>
     <li>
         Автори:
@@ -11,4 +11,21 @@
         Жанри:
         <span ng-repeat="genre in book.genres">{{genre}}<span ng-show="!$last">, </span></span>
     </li>
+    <li ng-if='book.publisher.name'>
+        Видавництво:
+        <a href="/#/publishers/{{book.publisher._id}}">{{book.publisher.name}}</a>
+    </li>
+    <li ng-if='book.publication.pbn_date'>
+        Дата видання:
+        <span>{{book.publication.pbn_date}}</span>
+    </li>
+    <li ng-if='book.publication.amount'>
+        Тираж:
+        <span>{{book.publication.amount}}</span>
+    </li>    
+    Ціна?
 </ul>
+<hr>
+<label for="book_quantity">Кількість книг: </label>
+<input id="book_quantity" type="number" ng-model="book_quantity">
+<a href="/#/cart/" type="button" class="btn btn-primary" ng-click="new_order()">Замовити</button>

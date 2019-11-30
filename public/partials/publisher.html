@@ -1,0 +1,11 @@
+<h1>Видавництво {{publisher.name}}</h1>
+<hr>
+<ul>
+    <li>Адреса: {{publisher.address}}</li>
+    <li>Контакти: {{publisher.contact}}</li>
+    <li>Список книг:
+        <span ng-repeat="publication in publisher.publications">
+            <a href="/#/books/{{publication.book._id}}">{{publication.book.name}}</a><span ng-show="!$last">, </span>
+        </span>
+    </li>
+</ul>
