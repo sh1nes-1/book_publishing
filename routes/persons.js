@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-// Insert One/Many
+// Insert One
 router.post('/', function(req, res, next) {
     var personsCollection = db.get('person');
     personsCollection.insert({
