@@ -30,9 +30,10 @@ router.get('/:id', function(req, res, next) {
 });
 
 // Insert One
-router.put('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
     var ordersCollection = db.get('order');
     ordersCollection.insert({
+        order_date: req.body.order_date,
         order_items: req.body.order_items
     }, function(err, order) {
         if (err) throw err;

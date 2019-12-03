@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"book_publishing.order"}],"uuid":"75e98980dbb74176ab3bf34675763ff0"}

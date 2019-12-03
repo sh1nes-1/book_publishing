@@ -1,0 +1,17 @@
+<h1>Ваші замовлення</h1>
+<ul>
+    <li ng-repeat="order in orders">
+        <hr>
+        <p>Замовлення {{order.order_date | date:longDate}}</p>
+        <div ng-repeat="order_item in order.order_items">
+            <hr>            
+            <ul style="list-style-type: none">
+                <li ng-if="order_item.book.name">Назва книги: {{order_item.book.name}}</li>
+                <li ng-if="order_item.publisher.name">Видавництво: {{order_item.publisher.name}}</li>
+                <li ng-if="order_item.quantity">Кількість: {{order_item.quantity}}</li>     
+            </ul>            
+        </div>   
+        <hr>     
+    </li>
+</ul>
+<a href="/#/" class="btn btn-primary">Повернутись на головну</a>

@@ -33,6 +33,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/cart.html',
             controller: 'CartCtrl'
         })
+        .when('/orders/', {
+            templateUrl: 'partials/orders.html',
+            controller: 'OrdersCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -148,7 +152,49 @@ app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
                 Publisher.get(function(publisher) {
                     order_item.publisher = publisher;
                 });
+
+                $scope.create_order = function() {
+                    var order_items = $cookies.getObject("order_items");
+                    if (order_items == undefined) {
+                        order_items = []
+                    }
+
+                    order_items.forEach(oi => {
+                        oi.price = 100;
+                    });
+
+                    var Orders = $resource('/api/orders');                    
+                    Orders.save({
+                        order_date: new Date(),
+                        order_items: order_items
+                    });
+
+                    $cookies.remove("order_items");
+                }
             });
         }
+    }
+]);
+
+app.controller('OrdersCtrl', ['$scope', '$resource',
+    function($scope, $resource) {
+        var Orders = $resource('/api/orders');                            
+        Orders.query(function(orders) {            
+            orders.forEach(o => {
+                o.order_items.forEach(oi => {
+                    var Books = $resource('/api/books/' + oi.book);
+                    Books.get(function(book) {
+                        oi.book = book;
+                    });
+
+                    var Publisher = $resource('/api/publishers/' + oi.publisher);
+                    Publisher.get(function(publisher) {
+                        oi.publisher = publisher;
+                    });
+                });
+            });
+
+            $scope.orders = orders;     
+        });
     }
 ]);
