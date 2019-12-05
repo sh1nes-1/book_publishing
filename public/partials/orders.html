@@ -1,20 +1,21 @@
 <h1>Список замовлень</h1>
 <hr ng-if="!orders">
 <p ng-if="!orders">Замовлень не знайдено</p>
-<ul ng-if="orders">    
-    <li ng-repeat="order in orders">
-        <hr>
-        <p>Замовлення {{order.order_date | date:longDate}}</p>
-        <div ng-repeat="order_item in order.order_items">
-            <hr>            
+
+<div class="card" ng-if="orders" style="margin: 20px;" ng-repeat="order in orders">
+    <div class="card-body">
+        <h4 class="card-title">Замовлення #{{$index + 1}}</h4>
+        <p>{{order.order_date | date:'dd.MM.yyyy HH:mm:ss'}}</p>
+        <div ng-repeat="order_item in order.order_items">          
+            <hr>
             <ul style="list-style-type: none">
-                <li ng-if="order_item.book.name">Назва книги: {{order_item.book.name}}</li>
-                <li ng-if="order_item.publisher.name">Видавництво: {{order_item.publisher.name}}</li>
+                <li ng-if="order_item.book.name">Назва книги: <a href="/#/books/{{order_item.book._id}}">{{order_item.book.name}}</a></li>
+                <li ng-if="order_item.publisher.name">Видавництво: <a href="/#/publishers/{{order_item.publisher._id}}">{{order_item.publisher.name}}</a></li>
                 <li ng-if="order_item.quantity">Кількість: {{order_item.quantity}}</li>     
-            </ul>            
-        </div>   
-        <hr>     
-    </li>
-</ul>
+            </ul>                        
+        </div>  
+    </div>    
+</div>
+
 <hr ng-if="!orders">
 <a href="/#/" class="btn btn-primary">Повернутись на головну</a>

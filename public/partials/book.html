@@ -22,12 +22,19 @@
     <li ng-if='book.publication.amount'>
         Тираж:
         <span>{{book.publication.amount}}</span>
-    </li>    
-    Ціна?
+    </li>
 </ul>
 <hr>
-<label for="book_quantity">Кількість книг: </label>
-<input id="book_quantity" type="number" ng-model="book_quantity">
-<a href="/#/cart/" type="button" class="btn btn-primary" ng-click="new_order_item()">Замовити</a>
+<div class="input-group">
+    <div>
+        <label for="book_quantity">Кількість книг: </label>
+    </div>
+    <div class="col-auto">
+        <input id="book_quantity" class="form-control form-control-sm" type="number" ng-model="book_quantity" min="1"> 
+    </div>
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="new_order_item()">Замовити</button>
+    </span>
+</div>
 <hr>
 <a href="/#/" class="btn btn-primary">Повернутись на головну</a>

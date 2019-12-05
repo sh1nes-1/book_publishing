@@ -76,8 +76,8 @@ app.controller('BooksCtrl', ['$scope', '$resource',
     }
 ]);
 
-app.controller('BookCtrl', ['$scope', '$resource', '$routeParams',
-    function($scope, $resource, $routeParams) {
+app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$location',
+    function($scope, $resource, $routeParams, $location) {
         var Books = $resource('/api/books/:id');
         var Authors = $resource('/api/books/:id/authors');
         var Publishers = $resource('/api/publishers');        
@@ -109,6 +109,7 @@ app.controller('BookCtrl', ['$scope', '$resource', '$routeParams',
                 quantity: $scope.book_quantity,
                 price: 100
             });
+            $location.path('/orders/');
         }
     }
 ]);
@@ -193,6 +194,12 @@ app.controller('OrdersCtrl', ['$scope', '$resource',
                         oi.publisher = publisher;
                     });
                 }));            
+              
+                orders = orders.sort((a, b) => {
+                    if (a.order_date < b.order_date) return 1;
+                    if (a.order_date > b.order_date) return -1;
+                    return 0;
+                });
 
                 $scope.orders = orders;  
             }   
