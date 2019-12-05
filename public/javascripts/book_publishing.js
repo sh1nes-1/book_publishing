@@ -1,4 +1,7 @@
-var app = angular.module('book_publishing', ['ngResource','ngRoute','ngCookies'])
+var app = angular.module('book_publishing', ['ngResource','ngRoute'])
+
+//TODO: button to delete item from cart
+//TODO: forms to add/edit author,book,publisher
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
@@ -73,8 +76,8 @@ app.controller('BooksCtrl', ['$scope', '$resource',
     }
 ]);
 
-app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$cookies',
-    function($scope, $resource, $routeParams, $cookies) {
+app.controller('BookCtrl', ['$scope', '$resource', '$routeParams',
+    function($scope, $resource, $routeParams) {
         var Books = $resource('/api/books/:id');
         var Authors = $resource('/api/books/:id/authors');
         var Publishers = $resource('/api/publishers');        
@@ -133,9 +136,10 @@ app.controller('PublisherCtrl', ['$scope', '$resource', '$routeParams',
     }
 ]);
 
-app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
-    function($scope, $resource, $cookies) {
-        var CartItems = $resource('/api/cart_items/');
+app.controller('CartCtrl', ['$scope', '$resource',
+    function($scope, $resource) {
+        var CartItems = $resource('/api/cart_items/:id');
+
         CartItems.query(function(cart_items) {
             if (cart_items.length > 0) {
                 cart_items.forEach(cart_item => {
@@ -154,6 +158,11 @@ app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
             }
         });
 
+        $scope.delete_order_item = function(or_it_id) {
+            CartItems.delete({id:or_it_id});
+            $scope.cart_items = $scope.cart_items.filter(item => item.id != or_it_id);
+        }
+
         $scope.create_order = function() {            
             CartItems.query(function(cart_items) {
                 var Orders = $resource('/api/orders');                    
@@ -164,7 +173,7 @@ app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
 
                 CartItems.delete();
             });
-        }
+        }        
     }
 ]);
 

@@ -3,10 +3,11 @@
 <p ng-if="!cart_items">Ви ще не додали жодної книги</p>
 <div ng-repeat="cart_item in cart_items">
     <hr>
-    <ul>
-        <li ng-if="cart_item.book.name">Назва книги: {{cart_item.book.name}}</li>
-        <li ng-if="cart_item.publisher.name">Видавництво: {{cart_item.publisher.name}}</li>
-        <li ng-if="cart_item.quantity">Кількість: {{cart_item.quantity}}</li>     
+    <ul class="list-unstyled">
+        <li ng-if="cart_item.book.name">Назва книги: <a href="/#/books/{{cart_item.book._id}}">{{cart_item.book.name}}</a></li>
+        <li ng-if="cart_item.publisher.name">Видавництво: <a href="/#/publishers/{{cart_item.publisher._id}}">{{cart_item.publisher.name}}</a></li>
+        <li ng-if="cart_item.quantity">Кількість: {{cart_item.quantity}}</li>    
+        <li><button class="btn" ng-click="delete_order_item(cart_item.id)"><span style="color: #d00" class="glyphicon glyphicon-remove"></span></button></li>
     </ul>
 </div>
 <hr>
