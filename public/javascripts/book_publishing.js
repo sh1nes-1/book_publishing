@@ -109,7 +109,7 @@ app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$location',
                 quantity: $scope.book_quantity,
                 price: 100
             });
-            $location.path('/orders/');
+            $location.path('/cart/');
         }
     }
 ]);
