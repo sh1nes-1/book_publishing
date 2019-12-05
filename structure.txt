@@ -1,7 +1,7 @@
 [COLLECTION] order:
 	_id
 	order_date
-	order_items: [{ publisher, book, price, quantity }, ...]
+	order_items: [{ publisher_id, book_id, price, quantity }, ...]
 
 [COLLECTION] publishers:
 	_id

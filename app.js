@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 var indexRouter = require('./routes/index');
 var personsRouter = require('./routes/persons');
@@ -10,6 +12,7 @@ var booksRouter = require('./routes/books');
 var authorsRouter = require('./routes/authors');
 var publishersRouter = require('./routes/publishers');
 var ordersRouter = require('./routes/orders');
+var cartItemsRouter = require('./routes/cart_items');
 
 var app = express();
 
@@ -23,12 +26,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: "VERY_SECURE_SECRET",
+  resave: false,
+  saveUninitialized: true,
+  store: new MongoStore({ url: 'mongodb://localhost:27017/book_publishing' })
+}));
+
 app.use('/', indexRouter);
 app.use('/api/persons', personsRouter);
 app.use('/api/books', booksRouter);
 app.use('/api/authors', authorsRouter);
 app.use('/api/publishers', publishersRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/cart_items', cartItemsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
