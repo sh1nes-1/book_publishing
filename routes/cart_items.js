@@ -22,6 +22,12 @@ router.post('/', function(req, res) {
     res.json(cart_item);
 });
 
+// Delete All
+router.delete('/', function(req, res) {
+    req.session.cart_items = null;    
+    res.json({success:1});
+})
+
 // Delete One
 router.delete('/:id', function(req, res) {
     if (req.session.cart_items) {

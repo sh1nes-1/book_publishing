@@ -1,14 +1,14 @@
 <h1>Ваша корзина</h1>
-<hr ng-if="!order_items">
-<p ng-if="!order_items">Ви ще не додали жодної книги</p>
-<div ng-repeat="order_item in order_items">
+<hr ng-if="!cart_items">
+<p ng-if="!cart_items">Ви ще не додали жодної книги</p>
+<div ng-repeat="cart_item in cart_items">
     <hr>
     <ul>
-        <li ng-if="order_item.book.name">Назва книги: {{order_item.book.name}}</li>
-        <li ng-if="order_item.publisher.name">Видавництво: {{order_item.publisher.name}}</li>
-        <li ng-if="order_item.quantity">Кількість: {{order_item.quantity}}</li>     
+        <li ng-if="cart_item.book.name">Назва книги: {{cart_item.book.name}}</li>
+        <li ng-if="cart_item.publisher.name">Видавництво: {{cart_item.publisher.name}}</li>
+        <li ng-if="cart_item.quantity">Кількість: {{cart_item.quantity}}</li>     
     </ul>
 </div>
 <hr>
-<a ng-if="order_items" href="/#/orders" ng-click="create_order()" class="btn btn-success">Оформити замовлення</a>
+<a ng-if="cart_items" href="/#/orders" ng-click="create_order()" class="btn btn-success">Оформити замовлення</a>
 <a href="/#/" class="btn btn-primary">Повернутись на головну</a>

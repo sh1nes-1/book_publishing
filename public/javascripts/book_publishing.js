@@ -53,11 +53,11 @@ app.controller('AuthorsCtrl', ['$scope', '$resource',
 
 app.controller('AuthorCtrl', ['$scope', '$resource', '$routeParams',
     function($scope, $resource, $routeParams) {
-        var Author = $resource('/api/authors/' + $routeParams.id);     
-        var Books = $resource('/api/authors/' + $routeParams.id + "/books");   
-        Author.get(function(author) {
+        var Authors = $resource('/api/authors/:id');     
+        var Books = $resource('/api/authors/:id/books');   
+        Authors.get({id:$routeParams.id}, function(author) {
             $scope.author = author;
-            Books.query(function(books) {
+            Books.query({id:$routeParams.id}, function(books) {
                 $scope.author.books = books;
             })
         });
@@ -75,12 +75,13 @@ app.controller('BooksCtrl', ['$scope', '$resource',
 
 app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$cookies',
     function($scope, $resource, $routeParams, $cookies) {
-        var Book = $resource('/api/books/' + $routeParams.id);
-        var Authors = $resource('/api/books/' + $routeParams.id + "/authors");
-        var Publishers = $resource('/api/publishers');
-        Book.get(function(book) {
+        var Books = $resource('/api/books/:id');
+        var Authors = $resource('/api/books/:id/authors');
+        var Publishers = $resource('/api/publishers');        
+
+        Books.get({id:$routeParams.id}, function(book) {
             $scope.book = book;
-            Authors.query(function(authors) {
+            Authors.query({id:$routeParams.id}, function(authors) {
                 $scope.book.authors = authors;
             });       
             Publishers.query(function(publishers) {
@@ -94,23 +95,17 @@ app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$cookies',
                 });
             });               
         });
+
         $scope.book_quantity = 1;
-        $scope.new_order = function() {
-            var order_items = $cookies.getObject("order_items");
-            if (order_items == undefined) {
-                order_items = []
-            }
 
-            var flag = false;
-            order_items.forEach(order_item => {
-                if (order_item.book == $scope.book._id) {
-                    flag = true;
-                    order_item.quantity += $scope.book_quantity;
-                }
-            })
-
-            if (!flag) order_items.push({"book":$scope.book._id,"publisher":$scope.book.publisher._id,"quantity":$scope.book_quantity});
-            $cookies.putObject("order_items", order_items);
+        $scope.new_order_item = function() {
+            var CartItems = $resource('/api/cart_items/');
+            CartItems.save({
+                book_id: $scope.book._id,
+                publisher_id: $scope.book.publisher._id,
+                quantity: $scope.book_quantity,
+                price: 100
+            });
         }
     }
 ]);
@@ -126,12 +121,12 @@ app.controller('PublishersCtrl', ['$scope', '$resource',
 
 app.controller('PublisherCtrl', ['$scope', '$resource', '$routeParams',
     function($scope, $resource, $routeParams) {
-        var Publisher = $resource('/api/publishers/' + $routeParams.id);        
-        Publisher.get(function(publisher) {
+        var Publishers = $resource('/api/publishers/:id');        
+        Publishers.get({id:$routeParams.id}, function(publisher) {
             $scope.publisher = publisher;
             
-            var Publications = $resource('/api/publishers/' + $routeParams.id + '/publications');   
-            Publications.query(function(publications) {
+            var Publications = $resource('/api/publishers/:id/publications');   
+            Publications.query({id:$routeParams.id}, function(publications) {
                 $scope.publisher.publications = publications;
             }); 
         });
@@ -140,37 +135,34 @@ app.controller('PublisherCtrl', ['$scope', '$resource', '$routeParams',
 
 app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
     function($scope, $resource, $cookies) {
-        $scope.order_items = $cookies.getObject("order_items");
-        if ($scope.order_items != undefined) {            
-            $scope.order_items.forEach(order_item => {
-                var Book = $resource('/api/books/' + order_item.book);
-                Book.get(function(book) {
-                    order_item.book = book;
-                });
-
-                var Publisher = $resource('/api/publishers/' + order_item.publisher);
-                Publisher.get(function(publisher) {
-                    order_item.publisher = publisher;
-                });
-
-                $scope.create_order = function() {
-                    var order_items = $cookies.getObject("order_items");
-                    if (order_items == undefined) {
-                        order_items = []
-                    }
-
-                    order_items.forEach(oi => {
-                        oi.price = 100;
+        var CartItems = $resource('/api/cart_items/');
+        CartItems.query(function(cart_items) {
+            if (cart_items.length > 0) {
+                cart_items.forEach(cart_item => {
+                    var Books = $resource('/api/books/:id');
+                    Books.get({id:cart_item.book_id}, function(book) {
+                        cart_item.book = book;
                     });
 
-                    var Orders = $resource('/api/orders');                    
-                    Orders.save({
-                        order_date: new Date(),
-                        order_items: order_items
+                    var Publishers = $resource('/api/publishers/:id');
+                    Publishers.get({id:cart_item.publisher_id}, function(publisher) {
+                        cart_item.publisher = publisher;
                     });
+                });
+                
+                $scope.cart_items = cart_items;
+            }
+        });
 
-                    $cookies.remove("order_items");
-                }
+        $scope.create_order = function() {            
+            CartItems.query(function(cart_items) {
+                var Orders = $resource('/api/orders');                    
+                Orders.save({
+                    order_date: new Date(),
+                    order_items: cart_items
+                });
+
+                CartItems.delete();
             });
         }
     }
@@ -179,22 +171,22 @@ app.controller('CartCtrl', ['$scope', '$resource', '$cookies',
 app.controller('OrdersCtrl', ['$scope', '$resource',
     function($scope, $resource) {
         var Orders = $resource('/api/orders');                            
-        Orders.query(function(orders) {            
-            orders.forEach(o => {
-                o.order_items.forEach(oi => {
-                    var Books = $resource('/api/books/' + oi.book);
-                    Books.get(function(book) {
+        Orders.query(function(orders) {   
+            if (orders.length > 0) {         
+                orders.forEach(order => order.order_items.forEach(oi => {
+                    var Books = $resource('/api/books/:id');
+                    Books.get({id:oi.book_id}, function(book) {
                         oi.book = book;
                     });
 
-                    var Publisher = $resource('/api/publishers/' + oi.publisher);
-                    Publisher.get(function(publisher) {
+                    var Publishers = $resource('/api/publishers/:id');
+                    Publishers.get({id:oi.publisher_id},function(publisher) {
                         oi.publisher = publisher;
                     });
-                });
-            });
+                }));            
 
-            $scope.orders = orders;     
+                $scope.orders = orders;  
+            }   
         });
     }
 ]);
