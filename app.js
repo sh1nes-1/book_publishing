@@ -26,12 +26,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var mongoose = require('mongoose');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/book_publishing', { useNewUrlParser: true, useUnifiedTopology: true });
+
 app.use(session({
   secret: "VERY_SECURE_SECRET",
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ url: process.env.MONGOLAB_URI || 'mongodb://localhost:27017/book_publishing' }, { useNewUrlParser: true })
-}));
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+})); 
 
 app.use('/', indexRouter);
 app.use('/api/persons', personsRouter);
