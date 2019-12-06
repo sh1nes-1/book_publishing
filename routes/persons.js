@@ -4,7 +4,7 @@ var router = express.Router();
 var mongodb = require("mongodb")
 
 var monk = require('monk');
-var db = monk('localhost:27017/book_publishing');
+var db = monk(process.env.MONGOLAB_URI || 'localhost:27017/book_publishing');
 
 // Get All
 router.get('/', function(req, res, next) {
