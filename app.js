@@ -30,7 +30,7 @@ app.use(session({
   secret: "VERY_SECURE_SECRET",
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ url: process.env.MONGOLAB_URI || 'mongodb://localhost:27017/book_publishing' })
+  store: new MongoStore({ url: process.env.MONGOLAB_URI || 'mongodb://localhost:27017/book_publishing' }, { useNewUrlParser: true })
 }));
 
 app.use('/', indexRouter);
