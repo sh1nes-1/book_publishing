@@ -13,6 +13,7 @@ var authorsRouter = require('./routes/authors');
 var publishersRouter = require('./routes/publishers');
 var ordersRouter = require('./routes/orders');
 var cartItemsRouter = require('./routes/cart_items');
+var publicationsRouter = require('./routes/publications');
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/authors', authorsRouter);
 app.use('/api/publishers', publishersRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/cart_items', cartItemsRouter);
+app.use('/api/publications', publicationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -62,5 +62,25 @@ router.get('/:id/publications', function(req, res, next) {
     });
 });
 
+//TODO: додавати публікацію (book_id, )
+router.post('/:id/publications', function(req, res) {
+    var publishersCollection = db.get('publisher');
+
+    publishersCollection.findOne({'_id':req.params.id}, function(err, publisher) {
+        if (err) throw err;
+        publisher.publications.push(req.body);
+        publishersCollection.update({'_id': req.params.id}, 
+            { 
+                $set: { 
+                    publications: publisher.publications 
+                } 
+            },
+            function(err, p) {
+                if (err) throw err;
+                res.json(p);
+            }
+        );
+    });
+});
 
 module.exports = router;

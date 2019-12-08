@@ -24,6 +24,14 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/book.html',
             controller: 'BookCtrl'
         })
+        .when('/add-book', {
+            templateUrl: 'partials/book-form.html',
+            controller: 'AddBookCtrl'
+        })
+        .when('/edit-book/:id', {
+            templateUrl: 'partials/book-form.html',
+            controller: 'EditBookCtrl'
+        })
         .when('/publishers', {
             templateUrl: 'partials/publishers.html',
             controller: 'PublishersCtrl'
@@ -67,39 +75,53 @@ app.controller('AuthorCtrl', ['$scope', '$resource', '$routeParams',
     }
 ]);
 
-app.controller('BooksCtrl', ['$scope', '$resource', 
-    function($scope, $resource) {
-        var Books = $resource('/api/books');
-        Books.query(function(books) {
+app.controller('BooksCtrl', ['$scope', '$resource',
+    function($scope, $resource) { 
+        var Publications = $resource('/api/publications');
+        var Books = $resource('/api/books/:id');        
+
+        Publications.query(function(publications) {
+            var books = [];
+
+            publications.forEach(p => {
+                Books.get({id:p.book_id}, function(book) {
+                    books.push(book);
+                });
+            });            
+
             $scope.books = books;
         });
     }
 ]);
 
 app.controller('BookCtrl', ['$scope', '$resource', '$routeParams', '$location',
-    function($scope, $resource, $routeParams, $location) {
+    function($scope, $resource, $routeParams, $location) { 
         var Books = $resource('/api/books/:id');
         var Authors = $resource('/api/books/:id/authors');
         var Publishers = $resource('/api/publishers');        
 
         Books.get({id:$routeParams.id}, function(book) {
             $scope.book = book;
+
             Authors.query({id:$routeParams.id}, function(authors) {
                 $scope.book.authors = authors;
-            });       
+            });    
+
             Publishers.query(function(publishers) {
                 $scope.book.publisher = publishers.find(pbr => {
                     return pbr.publications.some(pbn => {
                         if (pbn.book_id == book._id) {
                             $scope.book.publication = pbn;
+                            var pbn_date = new Date(Date.parse($scope.book.publication.pbn_date));
+                            $scope.book.publication.pbn_date = pbn_date.toLocaleDateString("en-US");                       
                             return true;
                         }
                     });
                 });
-            });               
+            });            
         });
 
-        $scope.book_quantity = 1;
+        $scope.book_quantity = 1;    
 
         $scope.new_order_item = function() {
             var CartItems = $resource('/api/cart_items/');
@@ -204,5 +226,62 @@ app.controller('OrdersCtrl', ['$scope', '$resource',
                 $scope.orders = orders;  
             }   
         });
+    }
+]);
+
+app.controller('AddBookCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location) {    
+        $scope.publication = {};    
+        $scope.publication.pbn_date = new Date();        
+        $scope.publication.amount = 1;
+
+        var Authors = $resource('/api/authors');
+        Authors.query(function(authors) {
+            $scope.authors = authors;
+        });
+
+        var Publishers = $resource('/api/publishers/');
+        Publishers.query(function(publishers) {
+            $scope.publishers = publishers;
+        })
+
+        $scope.Save = function() {
+            $scope.book.genres = $scope.genres.split(',').map(s => s.trim());
+            
+            var Books = $resource('/api/books');
+            Books.save($scope.book, function(book) {   
+                $scope.publication.book_id = book._id;
+
+                var PublisherPublications = $resource('/api/publishers/:id/publications');
+                PublisherPublications.save({id:$scope.publisher_id}, $scope.publication, function() {
+                    $location.path('/books');
+                });
+            });
+        }
+    }
+]);
+
+app.controller('EditBookCtrl', ['$scope', '$resource', '$routeParams', '$location',
+    function($scope, $resource, $routeParams, $location) {  
+        var Books = $resource('/api/books/:id');
+        Books.get({id:$routeParams.id}, function(book) {
+            $scope.book = book;
+
+            var Authors = $resource('/api/authors');
+            Authors.query(function(authors) {
+                $scope.authors = authors;
+            });
+            
+            $scope.genres = book.genres.join(', ');
+        });
+
+        $scope.Save = function() {
+            $scope.book.genres = $scope.genres.split(',').map(s => s.trim());
+            
+            var Books = $resource('/api/books/:id', { id:'@_id' }, { update: { method: 'PUT' } });
+            Books.update({id:$scope.book._id}, $scope.book, function() {   
+                $location.path('/books/' + $scope.book._id);
+            });
+        }
     }
 ]);

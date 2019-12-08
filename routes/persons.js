@@ -23,9 +23,9 @@ router.post('/', function(req, res, next) {
         l_name: req.body.l_name,
         address: req.body.address,
         contact: req.body.contact
-    }, function(err, persons) {
+    }, function(err, person) {
         if (err) throw err;
-        res.json(persons);
+        res.json(person);
     });
 });
 

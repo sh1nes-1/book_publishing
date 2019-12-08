@@ -47,4 +47,35 @@ router.get('/:id/authors', function(req, res, next) {
     });
 });
 
+// Add book
+router.post('/', function(req, res) {
+    var booksCollection = db.get('book');
+    booksCollection.insert({
+        name: req.body.name,
+        genres: req.body.genres,
+        authors: req.body.authors
+    }, function(err, book) {
+        if (err) throw err;
+        res.json(book);
+    });
+});
+
+// Update book
+router.put('/:id', function(req, res) {
+    var booksCollection = db.get('book');
+    booksCollection.update({'_id': req.params.id}, 
+        { 
+            $set: { 
+                name: req.body.name,
+                authors: req.body.authors,
+                genres: req.body.genres
+            } 
+        },
+        function(err, book) {
+            if (err) throw err;        
+            res.json(book);
+        }
+    );
+});
+
 module.exports = router
