@@ -159,8 +159,8 @@ app.controller('PublisherCtrl', ['$scope', '$resource', '$routeParams',
     }
 ]);
 
-app.controller('CartCtrl', ['$scope', '$resource',
-    function($scope, $resource) {
+app.controller('CartCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location) {
         var CartItems = $resource('/api/cart_items/:id');
 
         CartItems.query(function(cart_items) {
@@ -195,6 +195,7 @@ app.controller('CartCtrl', ['$scope', '$resource',
                 });
 
                 CartItems.delete();
+                $location.path('/orders');
             });
         }        
     }
@@ -230,12 +231,14 @@ app.controller('OrdersCtrl', ['$scope', '$resource',
 ]);
 
 app.controller('AddBookCtrl', ['$scope', '$resource', '$location',
-    function($scope, $resource, $location) {    
+    function($scope, $resource, $location) { 
+        $scope.add = true;
+        
         $scope.publication = {};    
         $scope.publication.pbn_date = new Date();        
         $scope.publication.amount = 1;
 
-        var Authors = $resource('/api/authors');
+        var Authors = $resource('/api/persons');
         Authors.query(function(authors) {
             $scope.authors = authors;
         });
@@ -243,7 +246,7 @@ app.controller('AddBookCtrl', ['$scope', '$resource', '$location',
         var Publishers = $resource('/api/publishers/');
         Publishers.query(function(publishers) {
             $scope.publishers = publishers;
-        })
+        })        
 
         $scope.Save = function() {
             $scope.book.genres = $scope.genres.split(',').map(s => s.trim());

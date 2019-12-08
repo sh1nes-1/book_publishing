@@ -1,5 +1,5 @@
-<h1 ng-if="!book">Додати книгу</h1>
-<h1 ng-if="book">Редагувати книгу</h1>
+<h1 ng-if="add">Додати книгу</h1>
+<h1 ng-if="!add">Редагувати книгу</h1>
 <hr>
 <form>
     <div class="form-group">
@@ -16,22 +16,21 @@
             <option ng-repeat="author in authors" value="{{author._id}}">{{author.f_name}} {{author.l_name}}</option>
         </select>
     </div>
-    <div ng-if="publication">
-        <div class="form-group">
-            <label>Видавництво:</label>
-            <select size="1" class="form-control" ng-model="publisher_id">           
-                <option ng-repeat="publisher in publishers" value="{{publisher._id}}">{{publisher.name}}</option>
-            </select>
-        </div>   
-        <div class="form-group">
-            <label>Дата видавництва:</label><br>
-            <input type="date" class="form-control" ng-model="publication.pbn_date">
-        </div>
-        <div class="form-group">
-            <label>Тираж:</label><br>
-            <input type="number" min="1" class="form-control" ng-model="publication.amount">
-        </div>
+    <div class="form-group" ng-hide="!add">
+        <label>Видавництво:</label>
+        <select size="1" class="form-control" ng-model="publisher_id">           
+            <option ng-repeat="publisher in publishers" value="{{publisher._id}}">{{publisher.name}}</option>
+        </select>
+    </div>   
+    <div class="form-group" ng-hide="!add">
+        <label>Дата видавництва:</label><br>
+        <input type="date" class="form-control" ng-model="publication.pbn_date">
     </div>
+    <div class="form-group" ng-hide="!add">
+        <label>Тираж:</label><br>
+        <input type="number" min="1" class="form-control" ng-model="publication.amount">
+    </div>
+
     <input type="button" class="btn btn-success" style="padding: 6px 50px" value="Зберегти" ng-click="Save()">
     <a href="/#/" class="btn btn-primary">Повернутись на головну</a>
 </form>
