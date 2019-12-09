@@ -1,6 +1,5 @@
 var app = angular.module('book_publishing', ['ngResource','ngRoute'])
 
-//TODO: button to delete item from cart
 //TODO: forms to add/edit author,book,publisher
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -31,6 +30,10 @@ app.config(['$routeProvider', function($routeProvider) {
         .when('/edit-book/:id', {
             templateUrl: 'partials/book-form.html',
             controller: 'EditBookCtrl'
+        })
+        .when('/delete-book/:id', {
+            templateUrl: 'partials/book-delete.html',
+            controller: 'DeleteBookCtrl'
         })
         .when('/publishers', {
             templateUrl: 'partials/publishers.html',
@@ -284,6 +287,32 @@ app.controller('EditBookCtrl', ['$scope', '$resource', '$routeParams', '$locatio
             var Books = $resource('/api/books/:id', { id:'@_id' }, { update: { method: 'PUT' } });
             Books.update({id:$scope.book._id}, $scope.book, function() {   
                 $location.path('/books/' + $scope.book._id);
+            });
+        }
+    }
+]);
+
+app.controller('DeleteBookCtrl',  ['$scope', '$resource', '$routeParams', '$location',
+    function($scope, $resource, $routeParams, $location) {  
+        var Books = $resource('/api/books/:id');
+        Books.get({id:$routeParams.id}, function(book) {
+            $scope.book = book;
+
+            var Authors = $resource('/api/books/:id/authors');
+            Authors.query({id:$routeParams.id}, function(authors) {
+                $scope.book.authors = authors;
+            });
+            
+            $scope.genres = book.genres.join(', ');
+        });
+
+        $scope.Delete = function() {
+            var Publications = $resource('/api/publications/:id');
+            Publications.delete({id:$scope.book._id});
+
+            var Books = $resource('/api/books/:id', { id:'@_id' });
+            Books.delete({id:$scope.book._id}, $scope.book, function() {   
+                $location.path('/books/');
             });
         }
     }

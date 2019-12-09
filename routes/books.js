@@ -78,4 +78,13 @@ router.put('/:id', function(req, res) {
     );
 });
 
+// Delete book
+router.delete('/:id', function(req, res) {
+    var booksCollection = db.get('book');
+    booksCollection.remove({'_id': req.params.id}, function(err, book) {
+        if (err) throw err;
+        res.json(book);
+    });
+});
+
 module.exports = router

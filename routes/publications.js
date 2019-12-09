@@ -12,4 +12,22 @@ router.get('/', function(req, res) {
     });
 });
 
+router.delete('/:id', function(req, res) {
+    var publishersCollection = db.get('publisher');
+    publishersCollection.find({}, function(err, publishers) {
+        if (err) throw err;
+        
+        publishers.forEach(publisher => {
+            var publications = publisher.publications.filter(publication => publication.book_id != req.params.id);
+            if (publisher.publications.length != publications.length) {
+                publishersCollection.update({'_id':publisher._id}, {
+                    $set: {
+                        publications: publications
+                    }
+                });
+            }
+        });
+    });
+});
+
 module.exports = router

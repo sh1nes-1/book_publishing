@@ -8,7 +8,7 @@
 	name
 	address
 	contact
-	publications: [{ _book_id, pbn_date, amount }, ...]
+	publications: [{ book_id, pbn_date, amount }, ...]
 
 [COLLECTION] book:
 	_id

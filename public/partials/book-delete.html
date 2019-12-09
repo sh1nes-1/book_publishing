@@ -1,0 +1,17 @@
+<h1>Видалити книгу</h1>
+<p>Ви впевнені, що хочете видалити цю книгу?</p>
+<ul>
+    <li>Назва: {{book.name}}</li>
+    <li>
+        Автори:
+        <span ng-repeat="author in book.authors">
+            <a href="/#/authors/{{author._id}}">{{author.f_name}} {{author.l_name}}</a><span ng-show="!$last">, </span>
+        </span>
+    </li>
+    <li>
+        Жанри:
+        <span ng-repeat="genre in book.genres">{{genre}}<span ng-show="!$last">, </span></span>
+    </li>
+</ul>
+<input type="button" value="Видалити" class="btn btn-danger" ng-click="Delete()"/>
+<a class="btn btn-secondary" href="/#/books/{{book._id}}">Назад</a>
