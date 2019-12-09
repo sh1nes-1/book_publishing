@@ -15,6 +15,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/author.html',
             controller: 'AuthorCtrl'
         })
+        .when('/add-author', {
+            templateUrl: 'partials/author-form.html',
+            controller: 'AddAuthorCtrl'
+        })
         .when('/books', {
             templateUrl: 'partials/books.html',
             controller: 'BooksCtrl'
@@ -313,6 +317,17 @@ app.controller('DeleteBookCtrl',  ['$scope', '$resource', '$routeParams', '$loca
             var Books = $resource('/api/books/:id', { id:'@_id' });
             Books.delete({id:$scope.book._id}, $scope.book, function() {   
                 $location.path('/books/');
+            });
+        }
+    }
+]);
+
+app.controller('AddAuthorCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location) { 
+        $scope.Save = function() {
+            var Persons = $resource('/api/persons');
+            Persons.save($scope.author, function() {
+                $location.path('/authors/');
             });
         }
     }
