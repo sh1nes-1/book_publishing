@@ -29,6 +29,20 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
+// Insert One
+router.post('/', function(req, res) {
+    var publishersCollection = db.get('publisher');
+    publishersCollection.insert({
+        name: req.body.name,
+        address: req.body.address,
+        contact: req.body.contact,
+        publications: []
+    }, function(err, publisher) {
+        if (err) throw err;
+        res.json(publisher);
+    });
+});
+
 // Update One
 router.put('/:id', function(req, res) {
     if (!mongodb.ObjectID.isValid(req.params.id)) {

@@ -51,6 +51,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/publisher.html',
             controller: 'PublisherCtrl'
         })
+        .when('/add-publisher', {
+            templateUrl: 'partials/publisher-form.html',
+            controller: 'AddPublisherCtrl'
+        })
         .when('/edit-publisher/:id', {
             templateUrl: 'partials/publisher-form.html',
             controller: 'EditPublisherCtrl'
@@ -351,6 +355,17 @@ app.controller('EditAuthorCtrl', ['$scope', '$resource', '$routeParams', '$locat
         $scope.Save = function() {
             Persons.update($scope.author, function() {
                 $location.path('/authors/' + $scope.author._id);
+            });
+        }
+    }
+]);
+
+app.controller('AddPublisherCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location) { 
+        $scope.Save = function() {
+            var Publishers = $resource('/api/publishers');
+            Publishers.save($scope.publisher, function() {
+                $location.path('/publishers/');
             });
         }
     }
