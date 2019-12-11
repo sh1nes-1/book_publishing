@@ -29,6 +29,17 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
+// Update One
+router.put('/:id', function(req, res) {
+    if (!mongodb.ObjectID.isValid(req.params.id)) {
+        res.status(400).send({error: 'BAD_FORMAT', message: req.params.id + ' is not in correct format!'});
+        return;
+    }
+
+    var publishersCollection = db.get('publisher');
+    publishersCollection.findOneAndUpdate({'_id': req.params.id}, {$set: req.body}).then(publisher => res.json(publisher));
+});
+
 // Get Publications
 router.get('/:id/publications', function(req, res, next) {
     if (!mongodb.ObjectID.isValid(req.params.id)) {

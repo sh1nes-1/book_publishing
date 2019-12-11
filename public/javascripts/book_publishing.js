@@ -19,6 +19,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/author-form.html',
             controller: 'AddAuthorCtrl'
         })
+        .when('/edit-author/:id', {
+            templateUrl: 'partials/author-form.html',
+            controller: 'EditAuthorCtrl'
+        })
         .when('/books', {
             templateUrl: 'partials/books.html',
             controller: 'BooksCtrl'
@@ -46,6 +50,10 @@ app.config(['$routeProvider', function($routeProvider) {
         .when('/publishers/:id', {
             templateUrl: 'partials/publisher.html',
             controller: 'PublisherCtrl'
+        })
+        .when('/edit-publisher/:id', {
+            templateUrl: 'partials/publisher-form.html',
+            controller: 'EditPublisherCtrl'
         })
         .when('/cart/', {
             templateUrl: 'partials/cart.html',
@@ -328,6 +336,36 @@ app.controller('AddAuthorCtrl', ['$scope', '$resource', '$location',
             var Persons = $resource('/api/persons');
             Persons.save($scope.author, function() {
                 $location.path('/authors/');
+            });
+        }
+    }
+]);
+
+app.controller('EditAuthorCtrl', ['$scope', '$resource', '$routeParams', '$location',
+    function($scope, $resource, $routeParams, $location) {  
+        var Persons = $resource('/api/persons/:id', { id:'@_id' }, { update: { method: 'PUT' } });
+        Persons.get({id:$routeParams.id}, function(person) {
+            $scope.author = person;
+        });
+
+        $scope.Save = function() {
+            Persons.update($scope.author, function() {
+                $location.path('/authors/' + $scope.author._id);
+            });
+        }
+    }
+]);
+
+app.controller('EditPublisherCtrl', ['$scope', '$resource', '$routeParams', '$location',
+    function($scope, $resource, $routeParams, $location) {  
+        var Publishers = $resource('/api/publishers/:id', { id:'@_id' }, { update: { method: 'PUT' } });
+        Publishers.get({id:$routeParams.id}, function(publisher) {
+            $scope.publisher = publisher;
+        });
+
+        $scope.Save = function() {
+            Publishers.update($scope.publisher, function() {
+                $location.path('/publishers/' + $scope.publisher._id);
             });
         }
     }

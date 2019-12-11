@@ -1,0 +1,20 @@
+<h1 ng-if="add">Додати видавництво</h1>
+<h1 ng-if="!add">Редагувати видавництво</h1>
+<hr>
+<form>
+    <div class="form-group">
+        <label>Назва видавництва:</label>
+        <input type="text" class="form-control" placeholder="Введіть назву видавництва" ng-model="publisher.name">
+    </div>
+    <div class="form-group">
+        <label>Адреса:</label>
+        <input type="text" class="form-control" placeholder="Введіть адресу видавництва" ng-model="publisher.address">
+    </div>   
+    <div class="form-group">
+        <label>Контактна інформація:</label>
+        <input type="text" class="form-control" placeholder="Введіть контактну інформацію видавництва" ng-model="publisher.contact">
+    </div>   
+
+    <input type="button" class="btn btn-success" style="padding: 6px 50px" value="Зберегти" ng-click="Save()">
+    <a href="/#/" class="btn btn-primary">Повернутись на головну</a>
+</form>
